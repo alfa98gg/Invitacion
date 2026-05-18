@@ -1,0 +1,511 @@
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invitación Galáctica - Cumpleaños 28</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts para estilo Star Wars y Sci-Fi -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Pathway+Gothic+One&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Orbitron', sans-serif;
+            background-color: #03030c;
+            overflow-x: hidden;
+        }
+        
+        /* Efecto de brillo de Neón / Sable de luz */
+        .neon-border-blue {
+            box-shadow: 0 0 15px #00d2ff, inset 0 0 15px #00d2ff;
+            border: 2px solid #00d2ff;
+        }
+        
+        .neon-text-yellow {
+            color: #ffe81f;
+            text-shadow: 0 0 10px rgba(255, 232, 31, 0.7), 0 0 20px rgba(255, 232, 31, 0.5);
+        }
+
+        .neon-text-red {
+            color: #ff0055;
+            text-shadow: 0 0 10px rgba(255, 0, 85, 0.7);
+        }
+
+        .neon-text-blue {
+            color: #00d2ff;
+            text-shadow: 0 0 10px rgba(0, 210, 255, 0.7);
+        }
+
+        /* Animación clásica del Texto de Star Wars en 3D (30s) */
+        .star-wars-crawl-container {
+            perspective: 300px;
+            width: 100%;
+            height: 60vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .star-wars-crawl {
+            position: absolute;
+            width: 90%;
+            left: 5%;
+            bottom: -100px;
+            font-family: 'Pathway Gothic One', sans-serif;
+            font-size: 2.5rem;
+            line-height: 1.5;
+            text-align: justify;
+            color: #ffe81f;
+            transform: rotateX(25deg) translateZ(0);
+            transform-origin: 50% 100%;
+            animation: crawl 30s linear forwards; 
+        }
+
+        @keyframes crawl {
+            0% {
+                top: 400px;
+                transform: rotateX(25deg) translateY(0) scale(1);
+                opacity: 1;
+            }
+            85% {
+                opacity: 1;
+            }
+            100% {
+                top: -650px;
+                transform: rotateX(25deg) translateY(-1200px) scale(0.6);
+                opacity: 0;
+            }
+        }
+
+        /* Destello holográfico */
+        .hologram-grid {
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 4px, 6px 100%;
+        }
+
+        /* Estrellas de fondo animadas */
+        #starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="text-white relative min-h-screen flex flex-col justify-between overflow-y-auto">
+
+    <!-- Audio Principal de Star Wars (Marcha Instrumental de John Williams) -->
+    <audio id="sw-theme" src="https://archive.org/download/StarWarsThemeSongByJohnWilliams/Star%20Wars%20Theme%20Song%20By%20John%20Williams.mp3" preload="auto" loop></audio>
+
+    <!-- Canvas para estrellas flotantes -->
+    <canvas id="starfield"></canvas>
+
+    <!-- PANTALLA 1: Entrada / Holocrón Cerrado -->
+    <div id="intro-screen" class="z-10 flex flex-col items-center justify-center min-h-screen p-4 text-center">
+        <!-- Logo de Star Wars personalizado -->
+        <div class="mb-8 transform hover:scale-105 transition duration-500 cursor-pointer">
+            <h1 class="text-6xl md:text-8xl font-black tracking-tighter text-black uppercase select-none" style="-webkit-text-stroke: 2px #ffe81f; filter: drop-shadow(0 0 15px rgba(255,232,31,0.6));">
+                STAr<br><span class="text-5xl md:text-7xl">WARS</span>
+            </h1>
+            <p class="text-xs uppercase tracking-[0.4em] text-cyan-400 mt-2">Edición Especial de Cumpleaños</p>
+        </div>
+
+        <div class="max-w-md bg-slate-900/80 backdrop-blur-md p-8 rounded-2xl border border-cyan-500/30 text-center shadow-2xl">
+            <div class="w-20 h-20 mx-auto mb-6 flex items-center justify-center rounded-full bg-cyan-950 border border-cyan-400 animate-pulse">
+                <!-- Icono de Transmisión Holográfica -->
+                <svg class="w-10 h-10 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15.536a5 5 0 001.414-1.414m2.828-9.9a9 9 0 0112.728 0M12 14a3 3 0 110-6 3 3 0 010 6z"></path>
+                </svg>
+            </div>
+            
+            <h2 class="text-lg uppercase tracking-widest text-cyan-400 mb-2">Transmisión de Datos Cifrada</h2>
+            <p class="text-sm text-slate-400 mb-6">Se ha interceptado una señal holográfica dirigida a ti desde el Borde Exterior.</p>
+            
+            <button onclick="iniciarInvitacion()" class="px-8 py-4 bg-cyan-500 text-black font-bold uppercase rounded-lg hover:bg-cyan-400 transition-all duration-300 shadow-[0_0_15px_rgba(6,182,212,0.5)] active:scale-95 w-full">
+                Abrir Holocrón
+            </button>
+        </div>
+    </div>
+
+    <!-- PANTALLA 2: La clásica intro de Star Wars deslizándose -->
+    <div id="crawl-screen" class="hidden z-10 flex-col items-center justify-center min-h-screen p-4 overflow-hidden relative">
+        <button onclick="saltarIntro()" class="absolute top-4 right-4 z-50 px-4 py-2 bg-slate-800/80 border border-slate-700 rounded-md text-xs tracking-widest text-slate-300 hover:bg-slate-700 transition">
+            SALTAR INTRO ➔
+        </button>
+
+        <div class="star-wars-crawl-container">
+            <div class="star-wars-crawl" id="crawl-text">
+                <p class="text-center text-cyan-400 text-2xl mb-4 font-sans tracking-widest">EPISODIO XXVIII</p>
+                <p class="text-center text-4xl mb-8 uppercase font-bold tracking-wider">EL DESPERTAR DE LA BORRACHERA</p>
+                
+                <p class="mb-6">La galaxia se prepara para el evento más caótico de la era. Tras 28 años de resistir al Imperio de la rutina, un guerrero ha decidido convocar a sus aliados más leales.</p>
+                
+                <p class="mb-6">El plan es simple pero peligroso: infiltrarse en territorio neutral para beber, fumar y pasarla increíble hasta que la Fuerza o el cuerpo digan basta.</p>
+                
+                <p class="mb-6">Las coordenadas ya han sido reveladas. No hay marcha atrás. Si estás leyendo esto, eres parte de la tripulación seleccionada...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- PANTALLA 3: Tarjeta de Invitación Principal (Holograma interactivo) -->
+    <div id="invitation-card" class="hidden z-10 w-full max-w-lg mx-auto p-4 my-auto">
+        <div class="bg-black/85 backdrop-blur-lg rounded-2xl p-6 md:p-8 neon-border-blue relative overflow-hidden hologram-grid">
+            
+            <!-- Efecto decorativo de esquinas de interfaz de Star Wars -->
+            <div class="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-cyan-400"></div>
+            <div class="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-cyan-400"></div>
+            <div class="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-cyan-400"></div>
+            <div class="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-cyan-400"></div>
+
+            <!-- Cabecera de la Invitación -->
+            <div class="text-center mb-6">
+                <span class="px-3 py-1 bg-red-950/60 border border-red-500 rounded text-[10px] tracking-[0.3em] font-bold text-red-400 animate-pulse">
+                    ALERTA DE REBELIÓN
+                </span>
+                <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight mt-4 uppercase">
+                    TE INVITO A MI<br>
+                    <span class="text-5xl md:text-6xl neon-text-yellow font-black">CUMPLE #28</span>
+                </h2>
+            </div>
+
+            <!-- Divisor: Sable de Luz interactivo -->
+            <div class="flex items-center justify-center my-6 group cursor-pointer" onclick="cambiarSable()" title="¡Haz clic para cambiar el color del sable!">
+                <div class="w-3 h-6 bg-slate-400 rounded-sm shadow-inner transform rotate-90 mr-[-4px]"></div>
+                <div id="lightsaber-blade" class="h-2 w-48 rounded-r-full transition-all duration-500 bg-red-500 shadow-[0_0_12px_#ff0055]"></div>
+                <span class="text-[9px] text-slate-500 ml-4 tracking-widest hidden md:inline group-hover:text-cyan-400 transition">CLICK SABLE</span>
+            </div>
+
+            <!-- El mensaje principal -->
+            <div class="text-center space-y-4 mb-8">
+                <p class="text-lg md:text-xl text-slate-200 leading-relaxed font-sans">
+                    Te invito a mi cumpleaños 28, a <br class="hidden sm:inline">
+                    <span class="font-bold text-white block mt-2 text-xl md:text-2xl">
+                        <span class="neon-text-red">BEBER</span>, <span class="neon-text-blue">FUMAR</span><br>
+                        Y <span class="neon-text-yellow font-black">PASARLA INCREÍBLE</span>.
+                    </span>
+                </p>
+            </div>
+
+            <!-- Detalles del Evento -->
+            <div class="space-y-4 bg-slate-950/80 p-5 rounded-xl border border-cyan-900/40 mb-8">
+                <!-- Lugar -->
+                <div class="flex items-start gap-4">
+                    <div class="p-2 bg-cyan-950 rounded-lg text-cyan-400 mt-1">
+                        <!-- Icono de mapa -->
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="text-xs uppercase tracking-widest text-slate-400">Lugar de Encuentro</h4>
+                        <p class="text-md font-bold text-white mt-0.5">Ventarrón Grano de Oro</p>
+                        <p class="text-xs text-cyan-300">Maracaibo, Venezuela</p>
+                    </div>
+                </div>
+
+                <!-- Hora -->
+                <div class="flex items-start gap-4">
+                    <div class="p-2 bg-yellow-950 rounded-lg text-yellow-400 mt-1">
+                        <!-- Icono de reloj -->
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="text-xs uppercase tracking-widest text-slate-400">Hora de inicio</h4>
+                        <p class="text-md font-bold text-white mt-0.5">9:00 PM</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Despedida intrigante -->
+            <div class="text-center mb-8">
+                <p class="text-sm tracking-wider uppercase text-cyan-400 animate-pulse font-bold">
+                    🛡️ TE ESTARÉ ESPERANDO 🛡️
+                </p>
+            </div>
+
+            <!-- Acciones Interactivas -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <!-- Botón de Confirmación por WhatsApp (API OFICIAL) -->
+                <button onclick="confirmarWhatsApp()" class="flex items-center justify-center gap-2 py-3 px-4 bg-green-600 hover:bg-green-500 text-white font-bold rounded-lg transition-all duration-300 shadow-[0_0_10px_rgba(22,163,74,0.4)] hover:shadow-[0_0_15px_rgba(22,163,74,0.6)]">
+                    <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                        <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.513 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.457L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.799.002-2.63-1.023-5.101-2.885-6.965C16.588 1.976 14.111 1.01 11.487 1.01 6.047 1.01 1.62 5.382 1.617 10.81c-.001 1.705.452 3.371 1.31 4.838l-.379 1.385-1.424 5.2 5.336-1.397.197-.116zM17.91 14.93c-.34-.17-2.01-.99-2.32-1.11-.31-.11-.53-.17-.75.17-.22.33-.85 1.11-1.04 1.32-.19.22-.38.25-.72.08-.34-.17-1.44-.53-2.74-1.69-1.01-.9-1.7-2.01-1.9-2.35-.19-.34-.02-.52.15-.69.15-.15.34-.39.51-.59.17-.19.22-.33.34-.56.11-.22.06-.42-.03-.59-.08-.17-.75-1.8-1.03-2.47-.27-.65-.54-.56-.75-.57l-.64-.01c-.22 0-.58.08-.88.41-.3.33-1.15 1.13-1.15 2.75 0 1.62 1.18 3.19 1.35 3.41.17.22 2.33 3.56 5.65 5 .79.34 1.4.55 1.88.71.8.25 1.52.21 2.09.13.64-.09 2.01-.82 2.3-1.62.29-.79.29-1.47.2-1.61-.09-.14-.33-.22-.67-.39z"/>
+                    </svg>
+                    Confirmar por WhatsApp
+                </button>
+
+                <!-- Botón de Ubicación Mapas -->
+                <button onclick="verUbicacion()" class="flex items-center justify-center gap-2 py-3 px-4 bg-cyan-950 hover:bg-cyan-900 border border-cyan-400 text-cyan-400 font-bold rounded-lg transition-all duration-300">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
+                    </svg>
+                    Fijar Coordenadas
+                </button>
+            </div>
+            
+            <!-- Sonido de Ambiente -->
+            <button onclick="toggleAmbiente()" class="mt-6 w-full py-1 text-center text-slate-500 hover:text-cyan-400 text-xs tracking-widest transition flex items-center justify-center gap-2">
+                <span id="speaker-icon">🔊</span> <span id="ambient-text">Pausar Música</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Footer decorativo -->
+    <div class="z-10 py-4 text-center text-[10px] tracking-widest text-slate-600 font-mono mt-4">
+        INVITACIÓN ENCRIPTADA // RECIPIENTE SELECCIONADO #28 // NO DIFUNDIR AL IMPERIO
+    </div>
+
+    <!-- Toast de Notificaciones Personalizado (para no usar alert()) -->
+    <div id="custom-toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-cyan-950 border border-cyan-400 text-cyan-200 px-5 py-3 rounded-lg shadow-[0_0_15px_rgba(6,182,212,0.4)] text-sm flex items-center gap-2">
+        <span class="text-cyan-400 font-bold">📢 Holonet:</span>
+        <span id="toast-message">Mensaje de prueba</span>
+    </div>
+
+    <script>
+        // Estrellas en movimiento con Canvas
+        const canvas = document.getElementById('starfield');
+        const ctx = canvas.getContext('2d');
+
+        let stars = [];
+        const numStars = 100;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            initStars();
+        }
+
+        function initStars() {
+            stars = [];
+            for (let i = 0; i < numStars; i++) {
+                stars.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 2,
+                    speed: Math.random() * 0.5 + 0.1,
+                    alpha: Math.random()
+                });
+            }
+        }
+
+        function drawStars() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#ffffff';
+
+            for (let i = 0; i < stars.length; i++) {
+                let s = stars[i];
+                ctx.globalAlpha = s.alpha;
+                ctx.beginPath();
+                ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Movimiento
+                s.y += s.speed;
+                // Efecto parpadeo
+                s.alpha += (Math.random() - 0.5) * 0.05;
+                if (s.alpha < 0) s.alpha = 0;
+                if (s.alpha > 1) s.alpha = 1;
+
+                // Reposicionamiento cuando salen de pantalla
+                if (s.y > canvas.height) {
+                    s.y = 0;
+                    s.x = Math.random() * canvas.width;
+                }
+            }
+            requestAnimationFrame(drawStars);
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+        drawStars();
+
+        // --- SISTEMA DE AUDIO EFECTOS (Solo efectos de UI) ---
+        let audioCtx = null;
+        let isMuted = false;
+        const themeAudio = document.getElementById('sw-theme');
+        themeAudio.volume = 0.6; // Volumen al 60%
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        // Sonido de encendido del Sable de Luz
+        function playLightsaberSound() {
+            if (isMuted) return;
+            initAudio();
+            
+            const now = audioCtx.currentTime;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(40, now);
+            osc.frequency.exponentialRampToValueAtTime(120, now + 0.3);
+
+            gain.gain.setValueAtTime(0.01, now);
+            gain.gain.linearRampToValueAtTime(0.3, now + 0.1);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
+
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(300, now);
+
+            osc.connect(filter);
+            filter.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.start(now);
+            osc.stop(now + 0.6);
+        }
+
+        // Sonido de pitido de droide R2D2 para botones
+        function playDroidBeep() {
+            if (isMuted) return;
+            initAudio();
+            const now = audioCtx.currentTime;
+            
+            for(let i = 0; i < 3; i++) {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                const freq = 800 + Math.random() * 1200;
+                const timeStart = now + (i * 0.12);
+                
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, timeStart);
+                osc.frequency.exponentialRampToValueAtTime(freq + (Math.random() - 0.5) * 400, timeStart + 0.1);
+                
+                gain.gain.setValueAtTime(0.05, timeStart);
+                gain.gain.exponentialRampToValueAtTime(0.001, timeStart + 0.1);
+                
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                osc.start(timeStart);
+                osc.stop(timeStart + 0.1);
+            }
+        }
+
+        // --- MANEJO DE FLUJO DE PANTALLAS ---
+
+        function iniciarInvitacion() {
+            initAudio();
+            playLightsaberSound();
+            
+            // Iniciar la música instrumental orquestal original de Star Wars
+            themeAudio.play().then(() => {
+                isMuted = false;
+                document.getElementById('speaker-icon').textContent = "🔊";
+                document.getElementById('ambient-text').textContent = "Pausar Música";
+            }).catch(error => {
+                console.log("El navegador requiere interacción física para reproducir audio.", error);
+            });
+            
+            document.getElementById('intro-screen').classList.add('hidden');
+            document.getElementById('crawl-screen').classList.remove('hidden');
+            document.getElementById('crawl-screen').classList.add('flex');
+            
+            // Programar salto automático de la intro cuando acabe el texto deslizante (30s)
+            setTimeout(() => {
+                saltarIntro();
+            }, 30000); 
+        }
+
+        function saltarIntro() {
+            playDroidBeep();
+            document.getElementById('crawl-screen').classList.add('hidden');
+            document.getElementById('crawl-screen').classList.remove('flex');
+            document.getElementById('invitation-card').classList.remove('hidden');
+            
+            showToast("Transmisión Holográfica cargada.");
+        }
+
+        // --- COMPORTAMIENTOS INTERACTIVOS ---
+
+        const coloresSable = [
+            { bg: 'bg-red-500', shadow: 'shadow-[0_0_12px_#ff0055]' },
+            { bg: 'bg-blue-500', shadow: 'shadow-[0_0_12px_#00d2ff]' },
+            { bg: 'bg-green-500', shadow: 'shadow-[0_0_12px_#39ff14]' },
+            { bg: 'bg-purple-500', shadow: 'shadow-[0_0_12px_#b026ff]' }
+        ];
+        let colorIndex = 0;
+
+        function cambiarSable() {
+            colorIndex = (colorIndex + 1) % coloresSable.length;
+            const blade = document.getElementById('lightsaber-blade');
+            
+            blade.className = "h-2 w-48 rounded-r-full transition-all duration-500";
+            blade.classList.add(coloresSable[colorIndex].bg);
+            
+            if (coloresSable[colorIndex].bg === 'bg-red-500') blade.style.boxShadow = "0 0 15px #ff0055";
+            if (coloresSable[colorIndex].bg === 'bg-blue-500') blade.style.boxShadow = "0 0 15px #00d2ff";
+            if (coloresSable[colorIndex].bg === 'bg-green-500') blade.style.boxShadow = "0 0 15px #39ff14";
+            if (coloresSable[colorIndex].bg === 'bg-purple-500') blade.style.boxShadow = "0 0 15px #b026ff";
+
+            playLightsaberSound();
+            showToast("Cristal Kyber de sable alineado.");
+        }
+
+        // Confirmación enviando directamente a tu WhatsApp usando la API Oficial
+        function confirmarWhatsApp() {
+            playDroidBeep();
+            const mensaje = encodeURIComponent("¡Hola! He recibido tu transmisión de Star Wars de tu cumple #28 🌌. Confirmo mi asistencia para ir a beber, fumar y pasarla increíble en Ventarrón Grano de Oro. ¡Allí estaré! 🍻🚀");
+            
+            // Usando api.whatsapp.com para garantizar que abra el chat directo con el número
+            const url = `https://api.whatsapp.com/send?phone=584146354486&text=${mensaje}`;
+            window.open(url, '_blank');
+        }
+
+        // Abrir Google Maps con la ubicación
+        function verUbicacion() {
+            playDroidBeep();
+            const url = `https://www.google.com/maps/search/?api=1&query=Ventarrón+Grano+de+Oro+Maracaibo`;
+            window.open(url, '_blank');
+        }
+
+        // Alternar mutear/activar música
+        function toggleAmbiente() {
+            isMuted = !isMuted;
+            const icon = document.getElementById('speaker-icon');
+            const txt = document.getElementById('ambient-text');
+            
+            if (isMuted) {
+                themeAudio.pause();
+                icon.textContent = "🔇";
+                txt.textContent = "Reproducir Música";
+                showToast("Sistemas de audio silenciados.");
+            } else {
+                themeAudio.play();
+                icon.textContent = "🔊";
+                txt.textContent = "Pausar Música";
+                showToast("Sistemas de audio online.");
+            }
+        }
+
+        // Sistema de notificaciones
+        function showToast(msg) {
+            const toast = document.getElementById('custom-toast');
+            document.getElementById('toast-message').textContent = msg;
+            
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+            
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
+
+```
