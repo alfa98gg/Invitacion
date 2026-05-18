@@ -97,12 +97,9 @@
 </head>
 <body class="text-white relative min-h-screen flex flex-col justify-between overflow-y-auto">
 
-    <!-- Audio Principal de Star Wars (Enlace directo ultra veloz desde Wikimedia Commons de alta disponibilidad) -->
-    <!-- Incluye múltiples fuentes de respaldo por si alguno tuviese caídas en Venezuela -->
-    <audio id="sw-theme" loop preload="auto" crossorigin="anonymous">
-        <source src="https://upload.wikimedia.org/wikipedia/commons/e/ec/Main_Theme_From_Star_Wars.ogg" type="audio/ogg">
-        <source src="https://upload.wikimedia.org/wikipedia/commons/b/ba/Star_Wars_Theme_Song_Cover.mp3" type="audio/mp3">
-        <source src="https://archive.org/download/StarWarsThemeSongByJohnWilliams/Star%20Wars%20Theme%20Song%20By%20John%20Williams.mp3" type="audio/mp3">
+    <!-- Audio cargado de forma local desde tu repositorio de GitHub para evitar bloqueos y caídas -->
+    <audio id="sw-theme" loop preload="auto">
+        <source src="marcha.mp3" type="audio/mp3">
     </audio>
 
     <!-- Canvas para estrellas flotantes -->
@@ -118,19 +115,20 @@
             <p class="text-xs uppercase tracking-[0.4em] text-cyan-400 mt-2">Edición Especial de Cumpleaños</p>
         </div>
 
-        <div class="max-w-md bg-slate-900/80 backdrop-blur-md p-8 rounded-2xl border border-cyan-500/30 text-center shadow-2xl">
-            <div class="w-20 h-20 mx-auto mb-6 flex items-center justify-center rounded-full bg-cyan-950 border border-cyan-400 animate-pulse">
+        <div class="max-w-md bg-slate-900/80 backdrop-blur-md p-8 rounded-2xl border border-cyan-500/30 text-center shadow-2xl relative">
+            <div id="holocron-icon-container" class="w-20 h-20 mx-auto mb-6 flex items-center justify-center rounded-full bg-cyan-950 border border-cyan-400 animate-pulse transition-all duration-300">
                 <!-- Icono de Transmisión Holográfica -->
-                <svg class="w-10 h-10 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg id="holocron-svg" class="w-10 h-10 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15.536a5 5 0 001.414-1.414m2.828-9.9a9 9 0 0112.728 0M12 14a3 3 0 110-6 3 3 0 010 6z"></path>
                 </svg>
             </div>
             
-            <h2 class="text-lg uppercase tracking-widest text-cyan-400 mb-2">Transmisión de Datos Cifrada</h2>
-            <p class="text-sm text-slate-400 mb-6">Se ha interceptado una señal holográfica dirigida a ti desde el Borde Exterior.</p>
+            <h2 id="holocron-title" class="text-lg uppercase tracking-widest text-cyan-400 mb-2 transition-all duration-300">Transmisión de Datos Cifrada</h2>
+            <p id="holocron-desc" class="text-sm text-slate-400 mb-6 transition-all duration-300">Se ha interceptado una señal holográfica dirigida a ti desde el Borde Exterior.</p>
             
-            <button onclick="iniciarInvitacion()" class="px-8 py-4 bg-cyan-500 text-black font-bold uppercase rounded-lg hover:bg-cyan-400 transition-all duration-300 shadow-[0_0_15px_rgba(6,182,212,0.5)] active:scale-95 w-full">
-                Abrir Holocrón
+            <!-- Botón interactivo de doble acción sin palabras clic -->
+            <button id="holocron-btn" onclick="manejarToqueHolocron()" class="px-8 py-4 bg-cyan-500 text-black font-bold uppercase rounded-lg hover:bg-cyan-400 transition-all duration-300 shadow-[0_0_15px_rgba(6,182,212,0.5)] active:scale-95 w-full">
+                Sintonizar Señal Galáctica
             </button>
         </div>
     </div>
@@ -180,7 +178,7 @@
             <div class="flex items-center justify-center my-6 group cursor-pointer" onclick="cambiarSable()" title="¡Haz clic para cambiar el color del sable!">
                 <div class="w-3 h-6 bg-slate-400 rounded-sm shadow-inner transform rotate-90 mr-[-4px]"></div>
                 <div id="lightsaber-blade" class="h-2 w-48 rounded-r-full transition-all duration-500 bg-red-500 shadow-[0_0_12px_#ff0055]"></div>
-                <span class="text-[9px] text-slate-500 ml-4 tracking-widest hidden md:inline group-hover:text-cyan-400 transition">CLICK SABLE</span>
+                <span class="text-[9px] text-slate-500 ml-4 tracking-widest hidden md:inline group-hover:text-cyan-400 transition">SABLE DE LUZ</span>
             </div>
 
             <!-- El mensaje principal -->
@@ -332,8 +330,9 @@
         // --- SISTEMA DE AUDIO EFECTOS (Solo efectos de UI) ---
         let audioCtx = null;
         let isMuted = false;
+        let holocronStage = 1; // Control de estado del Holocrón (1: Sin música, 2: Sintonizado con música)
         const themeAudio = document.getElementById('sw-theme');
-        themeAudio.volume = 0.5; // Volumen ideal
+        themeAudio.volume = 0.55; // Ajuste óptimo
 
         function initAudio() {
             if (!audioCtx) {
@@ -400,30 +399,56 @@
             }
         }
 
-        // --- MANEJO DE FLUJO DE PANTALLAS ---
+        // --- SISTEMA DEL HOLOCRÓN INTERACTIVO DE DOBLE TOQUE ---
 
-        function iniciarInvitacion() {
+        function manejarToqueHolocron() {
             initAudio();
-            playLightsaberSound();
-            
-            // Iniciar la música instrumental orquestal original de Star Wars
-            themeAudio.play().then(() => {
-                isMuted = false;
-                document.getElementById('speaker-icon').textContent = "🔊";
-                document.getElementById('ambient-text').textContent = "Pausar Música";
-                showToast("Frecuencia musical establecida.");
-            }).catch(error => {
-                console.log("El navegador requiere interacción física para reproducir audio.", error);
-            });
-            
-            document.getElementById('intro-screen').classList.add('hidden');
-            document.getElementById('crawl-screen').classList.remove('hidden');
-            document.getElementById('crawl-screen').classList.add('flex');
-            
-            // Programar salto automático de la intro cuando acabe el texto deslizante (30s)
-            setTimeout(() => {
-                saltarIntro();
-            }, 30000); 
+
+            if (holocronStage === 1) {
+                // PRIMER CLICK: Iniciar audio real orquestal de John Williams
+                playDroidBeep();
+                themeAudio.play().then(() => {
+                    isMuted = false;
+                    document.getElementById('speaker-icon').textContent = "🔊";
+                    document.getElementById('ambient-text').textContent = "Pausar Música";
+                }).catch(error => {
+                    console.log("Error al reproducir audio:", error);
+                });
+
+                // Cambiar el estilo visual a "Sintonizado"
+                const iconContainer = document.getElementById('holocron-icon-container');
+                iconContainer.classList.remove('bg-cyan-950', 'border-cyan-400');
+                iconContainer.classList.add('bg-yellow-950/40', 'border-yellow-400');
+                iconContainer.style.boxShadow = "0 0 20px #ffe81f";
+
+                const svgElement = document.getElementById('holocron-svg');
+                svgElement.classList.remove('text-cyan-400');
+                svgElement.classList.add('text-yellow-400');
+
+                document.getElementById('holocron-title').textContent = "¡SEÑAL SINTONIZADA!";
+                document.getElementById('holocron-title').className = "text-lg uppercase tracking-widest text-yellow-400 mb-2 font-bold animate-pulse";
+                document.getElementById('holocron-desc').textContent = "Transmisión orquestal enlazada de forma exitosa. Procede a acceder a los archivos.";
+                document.getElementById('holocron-desc').className = "text-sm text-yellow-300/80 mb-6";
+
+                const btn = document.getElementById('holocron-btn');
+                btn.className = "px-8 py-4 bg-yellow-400 text-black font-extrabold uppercase rounded-lg hover:bg-yellow-300 transition-all duration-300 shadow-[0_0_15px_#ffe81f] active:scale-95 w-full";
+                btn.textContent = "Sistemas Conectados // Acceder";
+
+                showToast("Señal musical sincronizada.");
+                holocronStage = 2; // Avanzar de etapa
+            } else if (holocronStage === 2) {
+                // SEGUNDO CLICK: Iniciar la intro
+                playLightsaberSound();
+                
+                document.getElementById('intro-screen').classList.add('hidden');
+                document.getElementById('crawl-screen').classList.remove('hidden');
+                document.getElementById('crawl-screen').classList.add('flex');
+                
+                // Programar salto automático de la intro cuando acabe el texto deslizante (30s)
+                setTimeout(() => {
+                    saltarIntro();
+                }, 30000);
+            }
         }
 
         function saltarIntro() {
