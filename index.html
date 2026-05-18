@@ -8,7 +8,7 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts para estilo Star Wars y Sci-Fi -->
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Pathway+Gothic+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght=400;700;900&family=Pathway+Gothic+One&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Orbitron', sans-serif;
@@ -97,8 +97,13 @@
 </head>
 <body class="text-white relative min-h-screen flex flex-col justify-between overflow-y-auto">
 
-    <!-- Audio Principal de Star Wars (Marcha Instrumental de John Williams) -->
-    <audio id="sw-theme" src="https://archive.org/download/StarWarsThemeSongByJohnWilliams/Star%20Wars%20Theme%20Song%20By%20John%20Williams.mp3" preload="auto" loop></audio>
+    <!-- Audio Principal de Star Wars (Enlace directo ultra veloz desde Wikimedia Commons de alta disponibilidad) -->
+    <!-- Incluye múltiples fuentes de respaldo por si alguno tuviese caídas en Venezuela -->
+    <audio id="sw-theme" loop preload="auto" crossorigin="anonymous">
+        <source src="https://upload.wikimedia.org/wikipedia/commons/e/ec/Main_Theme_From_Star_Wars.ogg" type="audio/ogg">
+        <source src="https://upload.wikimedia.org/wikipedia/commons/b/ba/Star_Wars_Theme_Song_Cover.mp3" type="audio/mp3">
+        <source src="https://archive.org/download/StarWarsThemeSongByJohnWilliams/Star%20Wars%20Theme%20Song%20By%20John%20Williams.mp3" type="audio/mp3">
+    </audio>
 
     <!-- Canvas para estrellas flotantes -->
     <canvas id="starfield"></canvas>
@@ -328,7 +333,7 @@
         let audioCtx = null;
         let isMuted = false;
         const themeAudio = document.getElementById('sw-theme');
-        themeAudio.volume = 0.6; // Volumen al 60%
+        themeAudio.volume = 0.5; // Volumen ideal
 
         function initAudio() {
             if (!audioCtx) {
@@ -406,6 +411,7 @@
                 isMuted = false;
                 document.getElementById('speaker-icon').textContent = "🔊";
                 document.getElementById('ambient-text').textContent = "Pausar Música";
+                showToast("Frecuencia musical establecida.");
             }).catch(error => {
                 console.log("El navegador requiere interacción física para reproducir audio.", error);
             });
