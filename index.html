@@ -8,7 +8,7 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts para estilo Star Wars y Sci-Fi -->
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Pathway+Gothic+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght=400;700;900&family=Pathway+Gothic+One&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Orbitron', sans-serif;
@@ -16,10 +16,15 @@
             overflow-x: hidden;
         }
         
-        /* Efecto de brillo de Neón / Sable de luz */
+        /* Efectos de brillo de Neón / Facciones */
         .neon-border-blue {
             box-shadow: 0 0 15px #00d2ff, inset 0 0 15px #00d2ff;
             border: 2px solid #00d2ff;
+        }
+
+        .neon-border-red {
+            box-shadow: 0 0 15px #ff0055, inset 0 0 15px #ff0055;
+            border: 2px solid #ff0055;
         }
         
         .neon-text-yellow {
@@ -97,7 +102,7 @@
 </head>
 <body class="text-white relative min-h-screen flex flex-col justify-between overflow-y-auto">
 
-    <!-- Audio cargado de forma local desde tu repositorio de GitHub para evitar bloqueos y caídas -->
+    <!-- Audio cargado de forma local desde tu repositorio de GitHub -->
     <audio id="sw-theme" loop preload="auto">
         <source src="marcha.mp3" type="audio/mp3">
     </audio>
@@ -126,7 +131,7 @@
             <h2 id="holocron-title" class="text-lg uppercase tracking-widest text-cyan-400 mb-2 transition-all duration-300">Transmisión de Datos Cifrada</h2>
             <p id="holocron-desc" class="text-sm text-slate-400 mb-6 transition-all duration-300">Se ha interceptado una señal holográfica dirigida a ti desde el Borde Exterior.</p>
             
-            <!-- Botón interactivo de doble acción sin palabras clic -->
+            <!-- Botón interactivo de doble acción -->
             <button id="holocron-btn" onclick="manejarToqueHolocron()" class="px-8 py-4 bg-cyan-500 text-black font-bold uppercase rounded-lg hover:bg-cyan-400 transition-all duration-300 shadow-[0_0_15px_rgba(6,182,212,0.5)] active:scale-95 w-full">
                 Sintonizar Señal Galáctica
             </button>
@@ -150,25 +155,26 @@
                 
                 <p class="mb-6">Las coordenadas ya han sido reveladas. No hay marcha atrás. Si estás leyendo esto, eres parte de la tripulación seleccionada...</p>
                 
-                <p class="text-justify mb-6">y que la fuerza te acompañe...</p>
+                <!-- Frase final con el mismo formato que el resto del texto -->
+                <p class="mb-6">y que la fuerza te acompañe...</p>
             </div>
         </div>
     </div>
 
     <!-- PANTALLA 3: Tarjeta de Invitación Principal (Holograma interactivo) -->
     <div id="invitation-card" class="hidden z-10 w-full max-w-lg mx-auto p-4 my-auto">
-        <div class="bg-black/85 backdrop-blur-lg rounded-2xl p-6 md:p-8 neon-border-blue relative overflow-hidden hologram-grid">
+        <div id="invitation-box" class="bg-black/85 backdrop-blur-lg rounded-2xl p-6 md:p-8 neon-border-blue transition-all duration-700 relative overflow-hidden hologram-grid">
             
-            <!-- Efecto decorativo de esquinas de interfaz de Star Wars -->
-            <div class="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-cyan-400"></div>
-            <div class="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-cyan-400"></div>
-            <div class="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-cyan-400"></div>
-            <div class="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-cyan-400"></div>
+            <!-- Efecto de esquinas -->
+            <div class="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-slate-500/50"></div>
+            <div class="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-slate-500/50"></div>
+            <div class="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-slate-500/50"></div>
+            <div class="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-slate-500/50"></div>
 
             <!-- Cabecera de la Invitación -->
             <div class="text-center mb-6">
-                <span class="px-3 py-1 bg-red-950/60 border border-red-500 rounded text-[10px] tracking-[0.3em] font-bold text-red-400 animate-pulse">
-                    ALERTA DE REBELIÓN
+                <span class="px-3 py-1 bg-slate-900 border border-slate-600 rounded text-[10px] tracking-[0.3em] font-bold text-slate-300 animate-pulse">
+                    ALERTA DE TRANSMISIÓN
                 </span>
                 <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight mt-4 uppercase">
                     TE INVITO A MI<br>
@@ -176,39 +182,116 @@
                 </h2>
             </div>
 
-            <!-- Divisor: Sable de Luz interactivo -->
-            <div class="flex items-center justify-center my-6 group cursor-pointer" onclick="cambiarSable()" title="¡Haz clic para cambiar el color del sable!">
-                <div class="w-3 h-6 bg-slate-400 rounded-sm shadow-inner transform rotate-90 mr-[-4px]"></div>
-                <div id="lightsaber-blade" class="h-2 w-48 rounded-r-full transition-all duration-500 bg-red-500 shadow-[0_0_12px_#ff0055]"></div>
-                <span class="text-[9px] text-slate-500 ml-4 tracking-widest hidden md:inline group-hover:text-cyan-400 transition">SABLE DE LUZ</span>
+            <!-- Selector de Facciones (Botones Independientes con Casco Clone y Droide B1 Calibrado de Perfil) -->
+            <div class="flex flex-col items-center justify-center my-6 w-full">
+                <p class="text-[10px] text-slate-400 tracking-[0.2em] uppercase mb-4">Selecciona tu Lealtad</p>
+                
+                <div class="flex gap-6 w-full justify-center">
+                    
+                    <!-- Botón República (Casco de Clone Trooper Fase II) -->
+                    <button id="btn-republic" onclick="setFaction('republic')" class="flex flex-col items-center justify-center gap-2 p-3 rounded-xl border border-blue-400 bg-blue-600 text-white shadow-[0_0_20px_rgba(59,130,246,0.6)] w-32 transition-all scale-105">
+                        <!-- Vector SVG detallado del casco Clone Trooper -->
+                        <svg class="w-12 h-12" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Base del casco -->
+                            <path d="M20 55C20 30 30 18 50 18C70 18 80 30 80 55C80 65 77 75 75 78H25C23 75 20 65 20 55Z" fill="#E5E7EB" stroke="currentColor" stroke-width="3"/>
+                            <!-- Cresta Central -->
+                            <path d="M47 15H53V30H47V15Z" fill="#1E3A8A" stroke="currentColor" stroke-width="1.5"/>
+                            <path d="M49 13H51V15H49V13Z" fill="#EF4444"/>
+                            <!-- Visor (Típico visor en T de clones) -->
+                            <path d="M28 44H72V50C72 50 62 48 50 48C38 48 28 50 28 50V44Z" fill="#111827"/>
+                            <path d="M47 48H53V70H47V48Z" fill="#111827"/>
+                            <!-- Filtros de respiración / Mejillas -->
+                            <path d="M25 65C25 65 32 68 35 78H25V65Z" fill="#9CA3AF" stroke="currentColor" stroke-width="1.5"/>
+                            <path d="M75 65C75 65 68 68 65 78H75V65Z" fill="#9CA3AF" stroke="currentColor" stroke-width="1.5"/>
+                            <!-- Respirador / Barbilla -->
+                            <rect x="42" y="74" width="16" height="8" rx="2" fill="#1F2937" stroke="currentColor" stroke-width="1.5"/>
+                            <!-- Detalles de las sienes (Franjas azules típicas de la Legión 501) -->
+                            <path d="M24 32C28 32 30 38 31 42H25C24 38 23 35 24 32Z" fill="#2563EB"/>
+                            <path d="M76 32C72 32 70 38 69 42H75C76 38 77 35 76 32Z" fill="#2563EB"/>
+                        </svg>
+                        <span class="text-[10px] font-bold uppercase tracking-wider">República</span>
+                    </button>
+
+                    <!-- Botón Separatista (Droide de Combate B1 Realista perfil/curvo) -->
+                    <button id="btn-separatist" onclick="setFaction('separatist')" class="flex flex-col items-center justify-center gap-2 p-3 rounded-xl border border-slate-700 bg-slate-900/50 text-slate-500 hover:border-red-500 hover:text-red-400 transition-all w-32 scale-95 opacity-50">
+                        <!-- Vector SVG ultra-fiel de la cabeza del B1 -->
+                        <svg class="w-12 h-12" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Soporte de cuello y hidráulicos traseros (Fondo) -->
+                            <path d="M 46 82 L 68 50" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                            <path d="M 50 82 L 68 53" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <circle cx="46" cy="82" r="2.5" fill="#374151" stroke="currentColor" stroke-width="1.5"/>
+
+                            <!-- Cilindro de conexión trasero (Cuello directo) -->
+                            <rect x="73" y="44" width="10" height="26" rx="2" fill="#D1D5DB" stroke="currentColor" stroke-width="2"/>
+                            <line x1="73" y1="50" x2="83" y2="50" stroke="currentColor" stroke-width="1.5"/>
+                            <line x1="73" y1="56" x2="83" y2="56" stroke="currentColor" stroke-width="1.5"/>
+                            <line x1="73" y1="62" x2="83" y2="62" stroke="currentColor" stroke-width="1.5"/>
+
+                            <!-- Pistón estabilizador de barbilla -->
+                            <path d="M 45 52 L 62 48" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+
+                            <!-- Perfil Principal del Cráneo de B1 (Forma de hocico curvado/pico de pato) -->
+                            <path d="M 21 62 
+                                     C 19 60, 21 55, 24 53 
+                                     L 56 31 
+                                     C 66 23, 83 23, 85 39
+                                     C 86 47, 84 53, 77 55
+                                     L 77 49
+                                     C 77 49, 71 47, 66 49
+                                     L 21 62 Z" 
+                                  fill="#E2CBA3" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/>
+
+                            <!-- Mandíbula y tip del morro separado por ranura -->
+                            <path d="M 21 62 L 24 53" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M 24 63 L 27 54" stroke="currentColor" stroke-width="1.5"/>
+
+                            <!-- Líneas de segmentación radial trasera (Idéntico a la imagen) -->
+                            <path d="M 59 28 L 64 35" stroke="currentColor" stroke-width="1.5"/>
+                            <path d="M 65 25 L 68 34" stroke="currentColor" stroke-width="1.5"/>
+                            <path d="M 73 25 L 73 35" stroke="currentColor" stroke-width="1.5"/>
+                            <path d="M 80 28 L 76 36" stroke="currentColor" stroke-width="1.5"/>
+                            <path d="M 84 33 L 79 38" stroke="currentColor" stroke-width="1.5"/>
+
+                            <!-- Pivote Circular del Oído ("Ear disc") -->
+                            <circle cx="68" cy="41" r="9" fill="#C5B190" stroke="currentColor" stroke-width="2"/>
+                            <circle cx="68" cy="41" r="3.2" fill="#D1D5DB" stroke="currentColor" stroke-width="1"/>
+                            <circle cx="68" cy="41" r="0.8" fill="#111827"/>
+
+                            <!-- Sensor fotorreceptor (Ojo ranurado) -->
+                            <ellipse cx="49" cy="41" rx="4" ry="2.2" transform="rotate(-15, 49, 41)" fill="#111827" stroke="currentColor" stroke-width="1"/>
+                            <line x1="46" y1="42" x2="52" y2="40" stroke="#E2CBA3" stroke-width="1"/>
+                        </svg>
+                        <span class="text-[10px] font-bold uppercase tracking-wider">Separatista</span>
+                    </button>
+
+                </div>
             </div>
 
             <!-- El mensaje principal -->
-            <div class="text-center space-y-4 mb-8">
+            <div class="text-center space-y-4 mb-8 mt-4">
                 <p class="text-lg md:text-xl text-slate-200 leading-relaxed font-sans">
                     Te invito a mi cumpleaños 28, a <br class="hidden sm:inline">
                     <span class="font-bold text-white block mt-2 text-xl md:text-2xl">
-                        <span class="neon-text-red">BEBER</span>, <span class="neon-text-blue">FUMAR</span><br>
+                        <span class="neon-text-blue" id="text-beber">BEBER</span>, <span class="neon-text-red" id="text-fumar">FUMAR</span><br>
                         Y <span class="neon-text-yellow font-black">PASARLA INCREÍBLE</span>.
                     </span>
                 </p>
             </div>
 
             <!-- Detalles del Evento -->
-            <div class="space-y-4 bg-slate-950/80 p-5 rounded-xl border border-cyan-900/40 mb-8">
-                <!-- Lugar -->
+            <div class="space-y-4 bg-slate-950/80 p-5 rounded-xl border border-slate-800/60 mb-8">
+                
+                <!-- Fecha -->
                 <div class="flex items-start gap-4">
-                    <div class="p-2 bg-cyan-950 rounded-lg text-cyan-400 mt-1">
-                        <!-- Icono de mapa -->
+                    <div class="p-2 bg-purple-950 rounded-lg text-purple-400 mt-1">
+                        <!-- Icono de Calendario -->
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                         </svg>
                     </div>
                     <div>
-                        <h4 class="text-xs uppercase tracking-widest text-slate-400">Lugar de Encuentro</h4>
-                        <p class="text-md font-bold text-white mt-0.5">Ventarrón Grano de Oro</p>
-                        <p class="text-xs text-cyan-300">Maracaibo, Venezuela</p>
+                        <h4 class="text-xs uppercase tracking-widest text-slate-400">Fecha Estelar</h4>
+                        <p class="text-md font-bold text-white mt-0.5">Sábado 23 de mayo</p>
                     </div>
                 </div>
 
@@ -222,14 +305,31 @@
                     </div>
                     <div>
                         <h4 class="text-xs uppercase tracking-widest text-slate-400">Hora de inicio</h4>
-                        <p class="text-md font-bold text-white mt-0.5">9:00 PM</p>
+                        <p class="text-md font-bold text-white mt-0.5">8:30 PM</p>
                     </div>
                 </div>
+
+                <!-- Lugar -->
+                <div class="flex items-start gap-4">
+                    <div class="p-2 bg-cyan-950 rounded-lg text-cyan-400 mt-1">
+                        <!-- Icono de mapa -->
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="text-xs uppercase tracking-widest text-slate-400">Lugar de Encuentro</h4>
+                        <p class="text-md font-bold text-white mt-0.5">Ventarrón Grano de Oro</p>
+                        <p class="text-xs text-slate-400">Maracaibo, Venezuela</p>
+                    </div>
+                </div>
+
             </div>
 
             <!-- Despedida intrigante -->
             <div class="text-center mb-8">
-                <p class="text-sm tracking-wider uppercase text-cyan-400 animate-pulse font-bold">
+                <p class="text-sm tracking-wider uppercase text-slate-300 animate-pulse font-bold">
                     🛡️ TE ESTARÉ ESPERANDO 🛡️
                 </p>
             </div>
@@ -245,7 +345,7 @@
                 </button>
 
                 <!-- Botón de Ubicación Mapas -->
-                <button onclick="verUbicacion()" class="flex items-center justify-center gap-2 py-3 px-4 bg-cyan-950 hover:bg-cyan-900 border border-cyan-400 text-cyan-400 font-bold rounded-lg transition-all duration-300">
+                <button onclick="verUbicacion()" class="flex items-center justify-center gap-2 py-3 px-4 bg-slate-800 hover:bg-slate-700 border border-slate-600 text-white font-bold rounded-lg transition-all duration-300">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
                     </svg>
@@ -254,7 +354,7 @@
             </div>
             
             <!-- Sonido de Ambiente -->
-            <button onclick="toggleAmbiente()" class="mt-6 w-full py-1 text-center text-slate-500 hover:text-cyan-400 text-xs tracking-widest transition flex items-center justify-center gap-2">
+            <button onclick="toggleAmbiente()" class="mt-6 w-full py-1 text-center text-slate-500 hover:text-white text-xs tracking-widest transition flex items-center justify-center gap-2">
                 <span id="speaker-icon">🔊</span> <span id="ambient-text">Pausar Música</span>
             </button>
         </div>
@@ -265,9 +365,9 @@
         INVITACIÓN ENCRIPTADA // RECIPIENTE SELECCIONADO #28 // NO DIFUNDIR AL IMPERIO
     </div>
 
-    <!-- Toast de Notificaciones Personalizado (para no usar alert()) -->
-    <div id="custom-toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-cyan-950 border border-cyan-400 text-cyan-200 px-5 py-3 rounded-lg shadow-[0_0_15px_rgba(6,182,212,0.4)] text-sm flex items-center gap-2">
-        <span class="text-cyan-400 font-bold">📢 Holonet:</span>
+    <!-- Toast de Notificaciones Personalizado -->
+    <div id="custom-toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-slate-900 border border-slate-500 text-white px-5 py-3 rounded-lg shadow-xl text-sm flex items-center gap-2">
+        <span class="text-yellow-400 font-bold">📢 Holonet:</span>
         <span id="toast-message">Mensaje de prueba</span>
     </div>
 
@@ -329,12 +429,14 @@
         resizeCanvas();
         drawStars();
 
-        // --- SISTEMA DE AUDIO EFECTOS (Solo efectos de UI) ---
+        // --- SISTEMA DE AUDIO EFECTOS ---
         let audioCtx = null;
         let isMuted = false;
-        let holocronStage = 1; // Control de estado del Holocrón (1: Sin música, 2: Sintonizado con música)
+        let holocronStage = 1; // 1: Sin música, 2: Sintonizado con música
+        let bandoElegido = 'República'; // Bando por defecto
+
         const themeAudio = document.getElementById('sw-theme');
-        themeAudio.volume = 0.55; // Ajuste óptimo
+        themeAudio.volume = 0.55; 
 
         function initAudio() {
             if (!audioCtx) {
@@ -345,8 +447,8 @@
             }
         }
 
-        // Sonido de encendido del Sable de Luz
-        function playLightsaberSound() {
+        // Sonido de encendido del Sable de Luz (usado al cambiar bando)
+        function playLightsaberSound(isSith = false) {
             if (isMuted) return;
             initAudio();
             
@@ -355,8 +457,9 @@
             const gain = audioCtx.createGain();
 
             osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(40, now);
-            osc.frequency.exponentialRampToValueAtTime(120, now + 0.3);
+            // Si es Sith, el sonido es ligeramente más grave
+            osc.frequency.setValueAtTime(isSith ? 35 : 45, now);
+            osc.frequency.exponentialRampToValueAtTime(isSith ? 100 : 130, now + 0.3);
 
             gain.gain.setValueAtTime(0.01, now);
             gain.gain.linearRampToValueAtTime(0.3, now + 0.1);
@@ -374,7 +477,7 @@
             osc.stop(now + 0.6);
         }
 
-        // Sonido de pitido de droide R2D2 para botones
+        // Sonido de pitido de droide
         function playDroidBeep() {
             if (isMuted) return;
             initAudio();
@@ -407,7 +510,7 @@
             initAudio();
 
             if (holocronStage === 1) {
-                // PRIMER TOQUE: Iniciar audio real orquestal de John Williams
+                // PRIMER TOQUE
                 playDroidBeep();
                 themeAudio.play().then(() => {
                     isMuted = false;
@@ -417,7 +520,6 @@
                     console.log("Error al reproducir audio:", error);
                 });
 
-                // Cambiar el estilo visual a "Sintonizado"
                 const iconContainer = document.getElementById('holocron-icon-container');
                 iconContainer.classList.remove('bg-cyan-950', 'border-cyan-400');
                 iconContainer.classList.add('bg-yellow-950/40', 'border-yellow-400');
@@ -436,17 +538,16 @@
                 btn.className = "px-8 py-4 bg-yellow-400 text-black font-extrabold uppercase rounded-lg hover:bg-yellow-300 transition-all duration-300 shadow-[0_0_15px_#ffe81f] active:scale-95 w-full";
                 btn.textContent = "Sistemas Conectados // Acceder";
 
-                showToast("Señal musical sincronizada.");
-                holocronStage = 2; // Avanzar de etapa
+                holocronStage = 2;
             } else if (holocronStage === 2) {
-                // SEGUNDO TOQUE: Iniciar la intro
+                // SEGUNDO TOQUE
                 playLightsaberSound();
                 
                 document.getElementById('intro-screen').classList.add('hidden');
                 document.getElementById('crawl-screen').classList.remove('hidden');
                 document.getElementById('crawl-screen').classList.add('flex');
                 
-                // Programar salto automático de la intro cuando acabe el texto deslizante (30s)
+                // Programar salto automático (30s)
                 setTimeout(() => {
                     saltarIntro();
                 }, 30000);
@@ -462,38 +563,46 @@
             showToast("Transmisión Holográfica cargada.");
         }
 
-        // --- COMPORTAMIENTOS INTERACTIVOS ---
+        // --- SISTEMA DE FACCIONES (República vs Separatista) ---
+        function setFaction(faction) {
+            const btnRep = document.getElementById('btn-republic');
+            const btnSep = document.getElementById('btn-separatist');
+            const card = document.getElementById('invitation-box');
 
-        const coloresSable = [
-            { bg: 'bg-red-500', shadow: 'shadow-[0_0_12px_#ff0055]' },
-            { bg: 'bg-blue-500', shadow: 'shadow-[0_0_12px_#00d2ff]' },
-            { bg: 'bg-green-500', shadow: 'shadow-[0_0_12px_#39ff14]' },
-            { bg: 'bg-purple-500', shadow: 'shadow-[0_0_12px_#b026ff]' }
-        ];
-        let colorIndex = 0;
+            if (faction === 'republic') {
+                bandoElegido = 'República';
+                playLightsaberSound(false); // Sonido Jedi
+                
+                // Estilos Botones (República Activo)
+                btnRep.className = "flex flex-col items-center justify-center gap-2 p-3 rounded-xl border border-blue-400 bg-blue-600 text-white shadow-[0_0_20px_rgba(59,130,246,0.6)] w-32 transition-all scale-105 opacity-100";
+                btnSep.className = "flex flex-col items-center justify-center gap-2 p-3 rounded-xl border border-slate-700 bg-slate-900/50 text-slate-500 hover:border-red-500 hover:text-red-400 transition-all w-32 scale-95 opacity-50";
+                
+                // Estilo Tarjeta
+                card.classList.remove('neon-border-red');
+                card.classList.add('neon-border-blue');
 
-        function cambiarSable() {
-            colorIndex = (colorIndex + 1) % coloresSable.length;
-            const blade = document.getElementById('lightsaber-blade');
-            
-            blade.className = "h-2 w-48 rounded-r-full transition-all duration-500";
-            blade.classList.add(coloresSable[colorIndex].bg);
-            
-            if (coloresSable[colorIndex].bg === 'bg-red-500') blade.style.boxShadow = "0 0 15px #ff0055";
-            if (coloresSable[colorIndex].bg === 'bg-blue-500') blade.style.boxShadow = "0 0 15px #00d2ff";
-            if (coloresSable[colorIndex].bg === 'bg-green-500') blade.style.boxShadow = "0 0 15px #39ff14";
-            if (coloresSable[colorIndex].bg === 'bg-purple-500') blade.style.boxShadow = "0 0 15px #b026ff";
+                showToast("Lealtad a la República confirmada.");
+            } else {
+                bandoElegido = 'Alianza Separatista';
+                playLightsaberSound(true); // Sonido Sith
+                
+                // Estilos Botones (Separatista Activo)
+                btnSep.className = "flex flex-col items-center justify-center gap-2 p-3 rounded-xl border border-red-400 bg-red-600 text-white shadow-[0_0_20px_rgba(220,38,38,0.6)] w-32 transition-all scale-105 opacity-100";
+                btnRep.className = "flex flex-col items-center justify-center gap-2 p-3 rounded-xl border border-slate-700 bg-slate-900/50 text-slate-500 hover:border-blue-500 hover:text-blue-400 transition-all w-32 scale-95 opacity-50";
+                
+                // Estilo Tarjeta
+                card.classList.remove('neon-border-blue');
+                card.classList.add('neon-border-red');
 
-            playLightsaberSound();
-            showToast("Cristal Kyber de sable alineado.");
+                showToast("Unido al lado oscuro Separatista.");
+            }
         }
 
-        // Confirmación enviando directamente a tu WhatsApp usando la API Oficial
+        // Confirmación enviando directamente a tu WhatsApp con fecha, hora y facción
         function confirmarWhatsApp() {
             playDroidBeep();
-            const mensaje = encodeURIComponent("¡Hola! He recibido tu transmisión de Star Wars de tu cumple #28 🌌. Confirmo mi asistencia para ir a beber, fumar y pasarla increíble en Ventarrón Grano de Oro. ¡Allí estaré! 🍻🚀");
+            const mensaje = encodeURIComponent(`¡Hola! He recibido tu transmisión de Star Wars de tu cumple #28 🌌. Confirmo mi asistencia como aliado de la *${bandoElegido}* para ir a beber, fumar y pasarla increíble el sábado 23 de mayo a las 8:30 PM en Ventarrón Grano de Oro. ¡Allí estaré! 🍻🚀`);
             
-            // Usando api.whatsapp.com para garantizar que abra el chat directo con el número
             const url = `https://api.whatsapp.com/send?phone=584146354486&text=${mensaje}`;
             window.open(url, '_blank');
         }
@@ -515,12 +624,10 @@
                 themeAudio.pause();
                 icon.textContent = "🔇";
                 txt.textContent = "Reproducir Música";
-                showToast("Sistemas de audio silenciados.");
             } else {
                 themeAudio.play();
                 icon.textContent = "🔊";
                 txt.textContent = "Pausar Música";
-                showToast("Sistemas de audio online.");
             }
         }
 
